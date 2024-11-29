@@ -13,14 +13,13 @@ class Response implements ResponseInterface
         require $file;
     }
 
-    public function sendWithSession(string $file, array $params): void
+    public function sendWithSession(array $params): void
     {
         session_start();
 
         $_SESSION['name'] = $params['name'];
 
-        $sessions = $_SESSION;
+        echo json_encode($_SESSION);
 
-        require $file;
     }
 }

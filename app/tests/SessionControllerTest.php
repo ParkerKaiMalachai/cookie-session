@@ -22,13 +22,11 @@ final class SessionControllerTest extends TestCase
 
         $mock->shouldReceive('sendWithSession')->andReturn('');
 
-        $sessionController = new SessionController('Session', $mock);
-
-        $sessionController->view = 'app/src/views/session.php';
+        $sessionController = new SessionController($mock);
 
         $_SESSION['name'] = $_POST['name'];
 
-        $sessionController->index();
+        $sessionController->startSession();
 
         $this->assertArrayHasKey('name', $sessionController->sessions);
     }
@@ -39,11 +37,11 @@ final class SessionControllerTest extends TestCase
 
         $mock->shouldReceive('sendWithSession')->andReturn('');
 
-        $sessionController = new SessionController('Session', $mock);
+        $sessionController = new SessionController($mock);
 
-        $sessionController->view = 'app/src/views/session.php';
+        $_POST['action'] = 'destroySession';
 
-        $sessionController->index();
+        $sessionController->startSession();
 
         $this->assertArrayHasKey('name', $sessionController->destroySession());
     }

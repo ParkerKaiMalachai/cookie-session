@@ -1,5 +1,5 @@
 let startBtn = document.querySelector(".session-create-btn")
-let destroyBtn = document.querySelector(".session-destroy-btn")
+let dataBlock = document.querySelector(".session-data")
 
 startBtn
 	? startBtn.addEventListener("click", async (e) => {
@@ -20,13 +20,9 @@ startBtn
 				})
 
 				if (response.ok) {
-					const data = await response.text()
-
-					const newWindow = window.open()
-
-					newWindow.document.write(data)
-
-					newWindow.document.close()
+					const data = await response.json()
+					let template = `<p>${data.name}</p><button class="session-destroy-btn">delete</button>`
+					dataBlock.innerHTML = template
 				} else {
 					const error = await response.json()
 				}
@@ -34,20 +30,22 @@ startBtn
 	  })
 	: ""
 
-destroyBtn
-	? destroyBtn.addEventListener("click", async (e) => {
-			e.preventDefault()
+window.addEventListener("click", async (e) => {
+	if (e.target.classList.contains("session-destroy-btn")) {
+		e.preventDefault()
 
-			let action = "destroySession"
+		let action = "destroySession"
 
-			try {
-				const response = await fetch("index.php", {
-					method: "POST",
-					headers: {
-						"Content-Type": "application/x-www-form-urlencoded",
-					},
-					body: new URLSearchParams({ action }),
-				})
-			} catch (e) {}
-	  })
-	: ""
+		try {
+			const response = await fetch("index.php", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/x-www-form-urlencoded",
+				},
+				body: new URLSearchParams({ action }),
+			})
+		} catch (e) {}
+
+		dataBlock.innerHTML = ""
+	}
+})

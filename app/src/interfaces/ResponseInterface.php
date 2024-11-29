@@ -8,5 +8,5 @@ interface ResponseInterface
 {
     public function send(string $file);
 
-    public function sendWithSession(string $file, array $params);
+    public function sendWithSession(array $params);
 }

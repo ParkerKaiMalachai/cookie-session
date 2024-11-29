@@ -10,13 +10,13 @@ use src\interfaces\ResponseInterface;
 
 final class Router implements RouterInterface
 {
-    public array $routes = [];
+    private array $routes = [];
 
-    public array $actions = [];
+    private array $actions = [];
 
-    public string $uri;
+    private string $uri;
 
-    public ResponseInterface $response;
+    private ResponseInterface $response;
 
     public function __construct(array $routes, array $actions, string $uri, ResponseInterface $response)
     {
@@ -68,15 +68,7 @@ final class Router implements RouterInterface
 
         $controllerName = 'src\\controllers\\' . $controller . 'Controller';
 
-        if ($_POST['action'] === 'startSession' | $_POST['action'] === 'destroySession') {
-
-            $controllerInstance = new $controllerName($controller, $this->response);
-            $controllerInstance->$action();
-            return;
-
-        }
-
-        $controllerInstance = new $controllerName();
+        $controllerInstance = new $controllerName($this->response);
 
         $controllerInstance->$action();
 

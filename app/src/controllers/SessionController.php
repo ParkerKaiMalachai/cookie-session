@@ -5,30 +5,36 @@ declare(strict_types=1);
 namespace src\controllers;
 
 use src\classes\exceptions\SessionEmptyParamException;
-use src\classes\exceptions\FileNotFoundException;
-use src\classes\AbstractRouteController;
+use src\interfaces\ResponseInterface;
+use src\interfaces\SessionControllerInterface;
 
-final class SessionController extends AbstractRouteController
+final class SessionController implements SessionControllerInterface
 {
     public array $sessions;
 
-    public function index(): array
+    public ResponseInterface $response;
+
+    public function __construct(ResponseInterface $response)
     {
-        if (!$this->validViewFile()) {
+        $this->response = $response;
+    }
 
-            throw new FileNotFoundException('File not found');
-
-        }
+    public function startSession(): array
+    {
 
         $params = $this->getParams();
 
-        if (count($params) === 0) {
+        if (count($params) === 0 && $_POST['action'] !== 'destroySession') {
             throw new SessionEmptyParamException('Empty set of params');
         }
 
-        $this->response->sendWithSession($this->view, $params);
+        $this->response->sendWithSession($params);
 
         $this->sessions = $_SESSION;
+
+        if ($_POST['action'] === 'destroySession') {
+            $this->destroySession();
+        }
 
         return $this->sessions;
     }
