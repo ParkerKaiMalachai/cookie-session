@@ -42,12 +42,13 @@ final class Router implements RouterInterface
 
         $controlData = $this->routes[$this->uri];
 
+        $controllerParams = $this->getControllerParams($controlData);
+
         $controllerName = $controlData['controller'];
 
-        $className = 'src\\controllers\\' . $controllerName . 'Controller';
-        $instanceOfController = new $className($controllerName, $this->response);
+        $actionName = $controllerParams['action'];
 
-        $actionName = $controlData['action'];
+        $instanceOfController = new $controllerParams['name']($controllerName, $this->response);
 
         $instanceOfController->$actionName();
 
@@ -62,22 +63,31 @@ final class Router implements RouterInterface
 
         $actionData = $this->actions[$_POST['action']];
 
-        $controller = $actionData['controller'];
+        $controllerParams = $this->getControllerParams($actionData);
 
-        $action = $actionData['action'];
+        $action = $controllerParams['action'];
 
-        $controllerName = 'src\\controllers\\' . $controller . 'Controller';
-
-        $controllerInstance = new $controllerName($this->response);
+        $controllerInstance = new $controllerParams['name']($this->response);
 
         $controllerInstance->$action();
 
     }
 
-    private function errorHandler($message): never
+    private function errorHandler(string $message): never
     {
         http_response_code(404);
 
         throw new NotFoundRouterException($message);
+    }
+
+    private function getControllerParams(array $data): array
+    {
+        $controller = $data['controller'];
+
+        $controllerName = 'src\\controllers\\' . $controller . 'Controller';
+
+        $action = $data['action'];
+
+        return ['name' => $controllerName, 'action' => $action];
     }
 }

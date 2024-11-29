@@ -43,7 +43,7 @@ final class SessionControllerTest extends TestCase
 
         $sessionController->startSession();
 
-        $this->assertArrayHasKey('name', $sessionController->destroySession());
+        $this->assertArrayHasKey('name', $sessionController->sessions);
     }
 }
 ;
