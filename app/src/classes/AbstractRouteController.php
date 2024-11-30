@@ -23,17 +23,9 @@ abstract class AbstractRouteController implements RoutesControllerInterface
 
         $this->path = $toLowePath;
 
-        $this->view = 'src/views/' . $this->path . '.php';
+        $this->view = $this->path;
     }
 
     abstract public function index();
 
-    protected function validViewFile(): bool
-    {
-        if (!file_exists($this->view)) {
-            return false;
-        }
-
-        return true;
-    }
 }

@@ -9,8 +9,11 @@ use src\classes\exceptions\FileNotFoundException;
 use src\classes\exceptions\NotFoundRouterException;
 use src\router\Router;
 use src\classes\Response;
+use src\classes\Request;
 
 $response = new Response();
+
+$request = new Request();
 
 $routesArray = [
     '/' => ['controller' => 'Home', 'action' => 'index']
@@ -25,7 +28,7 @@ $actionsArray = [
 
 $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
-$router = new Router($routesArray, $actionsArray, $uri, $response);
+$router = new Router($routesArray, $actionsArray, $uri, $response, $request);
 
 try {
     $router->routePath();

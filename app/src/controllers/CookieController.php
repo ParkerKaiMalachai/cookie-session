@@ -6,9 +6,22 @@ namespace src\controllers;
 
 use src\classes\exceptions\CookieEmptyParamsException;
 use src\interfaces\CookieControllerInterface;
+use src\interfaces\RequestInterface;
+use src\interfaces\ResponseInterface;
 
 final class CookieController implements CookieControllerInterface
 {
+    private RequestInterface $request;
+
+    private ResponseInterface $response;
+
+    public function __construct(ResponseInterface $response, RequestInterface $request)
+    {
+        $this->request = $request;
+
+        $this->response = $response;
+    }
+
     public function setCookie(): bool
     {
         $values = $this->getParamsForSetting();
@@ -19,7 +32,7 @@ final class CookieController implements CookieControllerInterface
 
         }
 
-        return setcookie($values['name'], $values['value'], time() + +$values['expire'], '/');
+        return $this->response->sendCookie($values['name'], $values['value'], time() + +$values['expire'], '/');
     }
 
     public function removeCookie(): bool
@@ -32,36 +45,39 @@ final class CookieController implements CookieControllerInterface
 
         }
 
-        return setcookie($value['name'], '', time() - 3600, '/');
+        return $this->response->removeCookie($value['name'], '', time() - 3600, '/');
+
     }
 
     private function getParamsForSetting(): array
     {
-        if (!isset($_POST['name']) && !isset($_POST['value']) && !isset($_POST['expire'])) {
 
-            return [];
+        $values = $this->request->getPostParam(['name', 'value', 'expire']);
 
+        foreach ($values as $key => $value) {
+
+            if (empty($value)) {
+
+                return [];
+
+            }
+
+            $resultValues[$key] = $value;
         }
 
-        $name = $_POST['name'];
-
-        $value = $_POST['value'];
-
-        $expire = $_POST['expire'];
-
-        return ['name' => $name, 'value' => $value, 'expire' => $expire];
+        return $resultValues;
     }
 
     private function getParamForRemove(): array
     {
-        if (!isset($_POST['name'])) {
+        $name = $this->request->getPostParam(['name']);
+
+        if (empty($name['name'])) {
 
             return [];
 
         }
 
-        $name = $_POST['name'];
-
-        return ['name' => $name];
+        return ['name' => $name['name']];
     }
 }

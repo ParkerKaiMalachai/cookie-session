@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace src\controllers;
 
 use src\classes\exceptions\SessionEmptyParamException;
+use src\interfaces\RequestInterface;
 use src\interfaces\ResponseInterface;
 use src\interfaces\SessionControllerInterface;
 
@@ -14,26 +15,36 @@ final class SessionController implements SessionControllerInterface
 
     public ResponseInterface $response;
 
-    public function __construct(ResponseInterface $response)
+    public RequestInterface $request;
+
+    public function __construct(ResponseInterface $response, RequestInterface $request)
     {
         $this->response = $response;
+
+        $this->request = $request;
     }
 
     public function startSession(): array
     {
 
-        $params = $this->getParams();
+        $params = $this->getParams('name');
 
-        if (count($params) === 0 && $_POST['action'] !== 'destroySession') {
+        $action = $this->getParams('action');
+
+        if (count($params) === 0 && count($action) > 0 && $action['param'] !== 'destroySession') {
+
             throw new SessionEmptyParamException('Empty set of params');
+
         }
 
         $this->response->sendWithSession($params);
 
         $this->sessions = $_SESSION;
 
-        if ($_POST['action'] === 'destroySession') {
+        if ($action['param'] === 'destroySession') {
+
             $this->destroySession();
+
         }
 
         return $this->sessions;
@@ -48,14 +59,17 @@ final class SessionController implements SessionControllerInterface
         return $this->sessions;
     }
 
-    private function getParams(): array
+    private function getParams(string $name): array
     {
-        if (!isset($_POST['name'])) {
+        $param = $this->request->getPostParam([$name]);
+
+        if (empty($param)) {
+
             return [];
+
         }
 
-        $name = $_POST['name'];
-
-        return ['name' => $name];
+        return ['param' => $param[$name]];
     }
+
 }

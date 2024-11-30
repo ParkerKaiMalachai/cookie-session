@@ -7,6 +7,7 @@ namespace src\router;
 use src\interfaces\RouterInterface;
 use src\classes\exceptions\NotFoundRouterException;
 use src\interfaces\ResponseInterface;
+use src\interfaces\RequestInterface;
 
 final class Router implements RouterInterface
 {
@@ -18,9 +19,13 @@ final class Router implements RouterInterface
 
     private ResponseInterface $response;
 
-    public function __construct(array $routes, array $actions, string $uri, ResponseInterface $response)
+    private RequestInterface $request;
+
+    public function __construct(array $routes, array $actions, string $uri, ResponseInterface $response, RequestInterface $request)
     {
         $this->response = $response;
+
+        $this->request = $request;
 
         $this->routes = $routes;
 
@@ -32,12 +37,16 @@ final class Router implements RouterInterface
     public function routePath(): void
     {
         if (isset($_POST['action'])) {
+
             $this->routeActions();
+
             return;
         }
 
         if (!isset($this->routes[$this->uri])) {
-            $this->errorHandler('Not found');
+
+            $this->errorHandler("Route $this->uri not found");
+
         }
 
         $controlData = $this->routes[$this->uri];
@@ -58,7 +67,9 @@ final class Router implements RouterInterface
     public function routeActions(): void
     {
         if (!isset($this->actions[$_POST['action']])) {
-            $this->errorHandler('Not found');
+
+            $this->errorHandler("Action not found");
+
         }
 
         $actionData = $this->actions[$_POST['action']];
@@ -67,7 +78,7 @@ final class Router implements RouterInterface
 
         $action = $controllerParams['action'];
 
-        $controllerInstance = new $controllerParams['name']($this->response);
+        $controllerInstance = new $controllerParams['name']($this->response, $this->request);
 
         $controllerInstance->$action();
 

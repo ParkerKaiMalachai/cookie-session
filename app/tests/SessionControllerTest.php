@@ -5,24 +5,34 @@ declare(strict_types=1);
 require 'vendor/autoload.php';
 
 use PHPUnit\Framework\TestCase;
+use src\classes\Request;
 use src\controllers\SessionController;
 use src\classes\Response;
 
 final class SessionControllerTest extends TestCase
 {
-    public function getInitParam(): Response
+    public function getInitMocks(): array
     {
-        $mock = Mockery::mock(Response::class);
-        return $mock;
+        $mockResponse = Mockery::mock(Response::class);
+
+        $mockRequest = Mockery::mock(Request::class);
+
+        return ['request' => $mockRequest, 'response' => $mockResponse];
     }
 
     public function testStartSession(): void
     {
-        $mock = $this->getInitParam();
+        $mocks = $this->getInitMocks();
 
-        $mock->shouldReceive('sendWithSession')->andReturn('');
+        $mockResponse = $mocks['response'];
 
-        $sessionController = new SessionController($mock);
+        $mockRequest = $mocks['request'];
+
+        $mockRequest->shouldReceive('getPostParam')->andReturn(['name' => $_POST['name']]);
+
+        $mockResponse->shouldReceive('sendWithSession')->andReturn('');
+
+        $sessionController = new SessionController($mockResponse, $mockRequest);
 
         $_SESSION['name'] = $_POST['name'];
 
@@ -33,17 +43,23 @@ final class SessionControllerTest extends TestCase
 
     public function testDestroySession(): void
     {
-        $mock = $this->getInitParam();
 
-        $mock->shouldReceive('sendWithSession')->andReturn('');
+        $mocks = $this->getInitMocks();
 
-        $sessionController = new SessionController($mock);
+        $mockResponse = $mocks['response'];
+
+        $mockRequest = $mocks['request'];
 
         $_POST['action'] = 'destroySession';
+
+        $mockRequest->shouldReceive('getPostParam')->andReturn(['name' => $_POST['name']], ['action' => $_POST['action']]);
+
+        $mockResponse->shouldReceive('sendWithSession')->andReturn('');
+
+        $sessionController = new SessionController($mockResponse, $mockRequest);
 
         $sessionController->startSession();
 
         $this->assertArrayHasKey('name', $sessionController->sessions);
     }
 }
-;

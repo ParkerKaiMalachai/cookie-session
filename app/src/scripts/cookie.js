@@ -17,12 +17,6 @@ sendBtn.addEventListener("click", async (e) => {
 			},
 			body: new URLSearchParams({ name, value, expire, action }),
 		})
-
-		if (response.ok) {
-			const data = await response.json()
-		} else {
-			const error = await response.json()
-		}
 	} catch (e) {}
 
 	setTimeout(() => {
@@ -44,12 +38,6 @@ sendBtn.addEventListener("click", async (e) => {
 					},
 					body: new URLSearchParams({ name, action }),
 				})
-
-				if (response.ok) {
-					const data = await response.json()
-				} else {
-					const error = await response.json()
-				}
 			} catch (e) {}
 
 			setTimeout(() => {
