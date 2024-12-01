@@ -1,3 +1,7 @@
+<?php if (isset($_COOKIE['PHPSESSID'])) {
+    session_start();
+    $sessions = $_SESSION;
+} ?>
 <!DOCTYPE html>
 <html lang="en">
 
