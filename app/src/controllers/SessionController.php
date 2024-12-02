@@ -54,6 +54,8 @@ final class SessionController implements SessionControllerInterface
     {
         $this->sessions = [];
 
+        unset($_COOKIE['PHPSESSID']);
+
         session_destroy();
 
         return $this->sessions;
