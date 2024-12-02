@@ -23,7 +23,7 @@ $actionsArray = [
     'setCookie' => ['controller' => 'Cookie', 'action' => 'setCookie'],
     'removeCookie' => ['controller' => 'Cookie', 'action' => 'removeCookie'],
     'startSession' => ['controller' => 'Session', 'action' => 'startSession'],
-    'destroySession' => ['controller' => 'Session', 'action' => 'startSession']
+    'destroySession' => ['controller' => 'Session', 'action' => 'destroySession']
 ];
 
 $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);

@@ -21,12 +21,13 @@ startBtn
 
 				if (response.ok) {
 					const data = await response.json()
-					let template = `<p>${data.name}</p><button class="session-destroy-btn">delete</button>`
-					dataBlock.innerHTML = template
 				} else {
 					const error = await response.json()
 				}
 			} catch (e) {}
+			setTimeout(() => {
+				window.location.reload()
+			}, 1000)
 	  })
 	: ""
 
@@ -47,5 +48,9 @@ window.addEventListener("click", async (e) => {
 		} catch (e) {}
 
 		dataBlock.innerHTML = ""
+
+		setTimeout(() => {
+			window.location.reload()
+		}, 1000)
 	}
 })

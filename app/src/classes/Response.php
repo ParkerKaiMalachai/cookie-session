@@ -24,12 +24,25 @@ class Response implements ResponseInterface
 
     public function sendWithSession(array $params): void
     {
-        session_start();
+        session_start([
+            'cookie_lifetime' => 0,
+        ]);
 
         $_SESSION['name'] = $params['param'];
 
         echo json_encode($_SESSION);
 
+    }
+
+    public function destroySession(): void
+    {
+        if (isset($_COOKIE['PHPSESSID'])) {
+
+            setcookie('PHPSESSID', '', time() - 3600, '/');
+
+        }
+
+        session_destroy();
     }
 
     public function sendCookie(string $name, string $value, int $expire, string $path): bool
@@ -45,7 +58,9 @@ class Response implements ResponseInterface
     protected function validViewFile(string $file): bool
     {
         if (!file_exists($file)) {
+
             return false;
+
         }
 
         return true;

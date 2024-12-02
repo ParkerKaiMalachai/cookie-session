@@ -10,6 +10,8 @@ interface ResponseInterface
 
     public function sendWithSession(array $params);
 
+    public function destroySession();
+
     public function sendCookie(string $name, string $value, int $expire, string $path);
 
     public function removeCookie(string $name, string $value, int $expire, string $path);

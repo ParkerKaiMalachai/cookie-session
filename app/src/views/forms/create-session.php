@@ -6,7 +6,8 @@
     </form>
     <div class="session-data">
         <?php if (isset($sessions['name'])) {
-            echo $sessions['name'];
+            $line = sprintf("<p>%s</p><button class='session-destroy-btn'>delete</button>", $sessions['name']);
+            echo $line;
         } ?>
     </div>
 </div>

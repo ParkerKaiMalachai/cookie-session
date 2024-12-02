@@ -29,9 +29,7 @@ final class SessionController implements SessionControllerInterface
 
         $params = $this->getParams('name');
 
-        $action = $this->getParams('action');
-
-        if (count($params) === 0 && count($action) > 0 && $action['param'] !== 'destroySession') {
+        if (count($params) === 0) {
 
             throw new SessionEmptyParamException('Empty set of params');
 
@@ -41,22 +39,15 @@ final class SessionController implements SessionControllerInterface
 
         $this->sessions = $_SESSION;
 
-        if ($action['param'] === 'destroySession') {
-
-            $this->destroySession();
-
-        }
-
         return $this->sessions;
     }
 
     public function destroySession(): array
     {
+
         $this->sessions = [];
 
-        unset($_COOKIE['PHPSESSID']);
-
-        session_destroy();
+        $this->response->destroySession();
 
         return $this->sessions;
     }

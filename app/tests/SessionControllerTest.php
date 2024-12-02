@@ -52,13 +52,13 @@ final class SessionControllerTest extends TestCase
 
         $_POST['action'] = 'destroySession';
 
-        $mockRequest->shouldReceive('getPostParam')->andReturn(['name' => $_POST['name']], ['action' => $_POST['action']]);
+        $mockRequest->shouldReceive('getPostParam')->andReturn(['name' => $_POST['name']]);
 
-        $mockResponse->shouldReceive('sendWithSession')->andReturn('');
+        $mockResponse->shouldReceive('destroySession')->andReturn('');
 
         $sessionController = new SessionController($mockResponse, $mockRequest);
 
-        $sessionController->startSession();
+        $sessionController->destroySession();
 
         $this->assertArrayHasKey('name', $sessionController->sessions);
     }
