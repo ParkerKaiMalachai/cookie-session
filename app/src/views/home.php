@@ -19,7 +19,7 @@
     <?php require 'forms/create-cookie.php' ?>
     <?php require 'forms/create-session.php' ?>
 </body>
-<script defer src="scripts/cookie.js"></script>
-<script defer src="scripts/session.js"></script>
+<script defer src="src/scripts/cookie.js"></script>
+<script defer src="src/scripts/session.js"></script>
 
 </html>

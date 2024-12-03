@@ -24,11 +24,11 @@ class Response implements ResponseInterface
 
     public function sendWithSession(array $params): void
     {
-        session_start([
-            'cookie_lifetime' => 0,
-        ]);
+        session_start();
 
         $_SESSION['name'] = $params['param'];
+
+        session_write_close();
 
         echo json_encode($_SESSION);
 
