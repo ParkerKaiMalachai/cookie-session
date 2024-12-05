@@ -1,47 +1,52 @@
-let sendBtn = document.querySelector(".cookie-create-btn")
-let deleteBtn = document.querySelector(".cookie-delete-btn")
+let sendBtn = document.querySelector(".cookie-create-btn");
 
 sendBtn.addEventListener("click", async (e) => {
-	e.preventDefault()
+  e.preventDefault();
 
-	let name = e.target.closest("form").querySelector(".cookie-create-name").value
-	let value = e.target.closest("form").querySelector(".cookie-create-value").value
-	let expire = e.target.closest("form").querySelector(".cookie-create-expire").value
-	let action = "setCookie"
+  let name = e.target
+    .closest("form")
+    .querySelector(".cookie-create-name").value;
+  let value = e.target
+    .closest("form")
+    .querySelector(".cookie-create-value").value;
+  let expire = e.target
+    .closest("form")
+    .querySelector(".cookie-create-expire").value;
+  let action = "setCookie";
 
-	try {
-		const response = await fetch("index.php", {
-			method: "POST",
-			headers: {
-				"Content-Type": "application/x-www-form-urlencoded",
-			},
-			body: new URLSearchParams({ name, value, expire, action }),
-		})
-	} catch (e) {}
+  try {
+    const response = await fetch("tasks/cookie.php", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+      body: new URLSearchParams({ name, value, expire, action }),
+    });
+  } catch (e) {}
 
-	setTimeout(() => {
-		window.location.reload()
-	}, 1000)
-})
+  setTimeout(() => {
+    window.location.reload();
+  }, 1000);
+});
 
-!!deleteBtn
-	? deleteBtn.addEventListener("click", async (e) => {
-			e.preventDefault()
+window.addEventListener("click", async (e) => {
+  if (e.target.classList.contains("cookie-delete-btn")) {
+    e.preventDefault();
 
-			let name = e.target.closest("li").querySelector("p").innerText
-			let action = "removeCookie"
-			try {
-				const response = await fetch("index.php", {
-					method: "POST",
-					headers: {
-						"Content-Type": "application/x-www-form-urlencoded",
-					},
-					body: new URLSearchParams({ name, action }),
-				})
-			} catch (e) {}
+    let name = e.target.closest("li").querySelector("p").innerText;
+    let action = "removeCookie";
+    try {
+      const response = await fetch("tasks/cookie.php", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+        body: new URLSearchParams({ name, action }),
+      });
+    } catch (e) {}
 
-			setTimeout(() => {
-				window.location.reload()
-			}, 1000)
-	  })
-	: ""
+    setTimeout(() => {
+      window.location.reload();
+    }, 1000);
+  }
+});

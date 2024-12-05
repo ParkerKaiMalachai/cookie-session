@@ -11,7 +11,7 @@ startBtn
 			let action = "startSession"
 
 			try {
-				const response = await fetch("index.php", {
+				const response = await fetch("tasks/session.php", {
 					method: "POST",
 					headers: {
 						"Content-Type": "application/x-www-form-urlencoded",
@@ -38,7 +38,7 @@ window.addEventListener("click", async (e) => {
 		let action = "destroySession"
 
 		try {
-			const response = await fetch("index.php", {
+			const response = await fetch("tasks/session.php", {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/x-www-form-urlencoded",

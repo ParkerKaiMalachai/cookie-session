@@ -6,61 +6,28 @@ require 'app/autoload.php';
 require 'vendor/autoload.php';
 
 use PHPUnit\Framework\TestCase;
-use src\classes\Request;
-use src\classes\Response;
-use src\controllers\CookieController;
+use src\classes\CookieManager;
 
 final class CookieControllerTest extends TestCase
 {
-    public function getInitMocks(): array
-    {
-        $mockResponse = Mockery::mock(Response::class);
-
-        $mockRequest = Mockery::mock(Request::class);
-
-        return ['request' => $mockRequest, 'response' => $mockResponse];
-    }
     public function testSetCookie(): void
     {
-        $mocks = $this->getInitMocks();
+        $cookieManager = new CookieManager();
 
-        $mockResponse = $mocks['response'];
+        $cookieManager->set('beep', 'val', 777, '/');
 
-        $mockRequest = $mocks['request'];
-
-        $_POST['name'] = 'bbb';
-
-        $_POST['value'] = 'ddd';
-
-        $_POST['expire'] = 5;
-
-        $arrayOfParams = ['name' => $_POST['name'], 'value' => $_POST['value'], 'expire' => $_POST['expire']];
-
-
-        $mockRequest->shouldReceive('getPostParam')->andReturn($arrayOfParams);
-
-        $mockResponse->shouldReceive('sendCookie')->andReturn(true);
-
-        $cookieController = new CookieController($mockResponse, $mockRequest);
-
-        $this->assertTrue($cookieController->setCookie());
+        $this->assertArrayHasKey('beep', $cookieManager->get());
     }
 
     public function testRemoveCookie(): void
     {
-        $mocks = $this->getInitMocks();
+        $cookieManager = new CookieManager();
 
-        $mockResponse = $mocks['response'];
+        $cookieManager->set('beep', 'val', 777, '/');
 
-        $mockRequest = $mocks['request'];
+        $cookieManager->remove('beep');
 
-        $mockRequest->shouldReceive('getPostParam')->andReturn(['name' => $_POST['name']]);
-
-        $mockResponse->shouldReceive('removeCookie')->andReturn(true);
-
-        $cookieController = new CookieController($mockResponse, $mockRequest);
-
-        $this->assertTrue($cookieController->removeCookie());
+        $this->assertArrayHasKey('beep', $cookieManager->get());
     }
 
 }
